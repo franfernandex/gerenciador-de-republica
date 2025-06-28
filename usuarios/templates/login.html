@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Gerenciador de Republica - Login
+{% endblock %}
+
+{% block conteudo %}
+    <div class="mycard">
+        <h1>Login</h1>
+        <center>
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <div class="input-group">
+                <span class="input-group-text">Usuário: </span>
+                <input type="text" class="form-control" placeholder="Usuário ..." name="usuario">
+            </div>
+            <br>
+            <div class="input-group">
+                <span class="input-group-text">Senha: </span>
+                <input type="password" class="form-control" placeholder="Senha ..." name="senha">
+            </div>
+            <br>
+            <input type="submit" value="Logar" class="btn btn-primary">
+        </form>
+        </center>
+    </div>
+{% endblock %}
