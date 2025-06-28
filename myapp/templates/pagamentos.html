@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Gerenciador de Republicas - Pagamentos
+{% endblock %}
+
+{% block conteudo %}
+    <div class="mycard">
+        <h1>Pagamentos</h1>
+        <ul>
+            {% for l in pagamentos %}
+            <li>{{ l.conta.nome_conta }} | {{l.valor_pago}} | {{l.pessoa.nome}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

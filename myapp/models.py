@@ -37,7 +37,7 @@ class Republica(models.Model):
     def listar_contas(self):
         return self.contas
 
-    def _str_(self):
+    def __str__(self):
         return self.nome
 
 
@@ -59,7 +59,7 @@ class Pessoa(models.Model):
     def verificar_pagamentos_feitos(self):
         return self.pagamentos.all()
 
-    def _str_(self):
+    def __str__(self):
         return self.nome
 
 
@@ -77,7 +77,7 @@ class Conta(models.Model):
     def verificar_status(self):
         return self.status
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.nome_conta} - R$ {self.valor}"
 
 
@@ -91,5 +91,5 @@ class Pagamento(models.Model):
     def verificar_sucesso_do_pagamento(self):
         return self.valor_pago >= self.conta.valor
 
-    def _str_(self):
+    def __str__(self):
         return f"{self.pessoa.nome} pagou R$ {self.valor_pago} em {self.data_pagamento}"

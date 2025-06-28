@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Gerenciador de Republicas - Contas
+{% endblock %}
+
+{% block conteudo %}
+    <div class="mycard">
+        <h1>Contas</h1>
+        <ul>
+            {% for l in contas %}
+            <li>{{ l.nome_conta }} | {{l.status}} | {{l.data_vencimento}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Gerenciador de Republicas - Pessoas
+{% endblock %}
+
+{% block conteudo %}
+    <div class="mycard">
+        <h1>Pessoas</h1>
+        <ul>
+            {% for l in pessoas %}
+            <li>{{ l.nome }} | {{l.republica.nome}} | {{l.telefone}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
