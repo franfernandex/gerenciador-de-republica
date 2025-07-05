@@ -6,7 +6,7 @@ class PagamentoForm(forms.ModelForm):
         model = Pagamento
         fields = '__all__'
 
-    def init(self, args, **kwargs):
+    def __init__(self, args, **kwargs):
         super().__init__(args, **kwargs)
 
         # Se estamos editando um pagamento existente
