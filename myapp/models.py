@@ -1,42 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.utils import timezone
+from datetime import datetime
+from decimal import Decimal
+
 # Create your models here.
 
 
 class Republica(models.Model):
     nome = models.CharField(max_length=100)
     endereco = models.CharField(max_length=255)
-
-    @property
-    def moradores(self):
-        return self.pessoas.all()  # related_name='pessoas'
-
-    @property
-    def contas(self):
-        return self.contas.all()  # related_name='contas'
-
-    def adicionar_morador(self, pessoa):
-        pessoa.republica = self
-        pessoa.save()
-
-    def remover_morador(self, pessoa):
-        if pessoa.republica == self:
-            pessoa.delete()
-
-    def adicionar_conta(self, conta):
-        conta.republica = self
-        conta.save()
-
-    def remover_conta(self, conta):
-        if conta.republica == self:
-            conta.delete()
-
-    def listar_moradores(self):
-        return self.moradores
-
-    def listar_contas(self):
-        return self.contas
 
     def __str__(self):
         return self.nome
@@ -49,17 +23,6 @@ class Pessoa(models.Model):
     telefone = models.CharField(max_length=15)
     republica = models.ForeignKey('Republica', related_name='pessoas', on_delete=models.CASCADE)
 
-    def pagar_conta(self, conta, valor, forma_pagamento):
-        return Pagamento.objects.create(
-            pessoa=self,
-            conta=conta,
-            valor_pago=valor,
-            forma_pagamento=forma_pagamento
-        )
-
-    def verificar_pagamentos_feitos(self):
-        return self.pagamentos.all()
-
     def __str__(self):
         return self.nome
 
@@ -67,30 +30,39 @@ class Pessoa(models.Model):
 class Conta(models.Model):
     republica = models.ForeignKey('Republica', related_name='contas', on_delete=models.CASCADE)
     nome_conta = models.CharField(max_length=100)
-    valor = models.FloatField()
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
     data_vencimento = models.DateField()
-    status = models.CharField(max_length=50)
-
-    def registrar_pagamento(self, pagamento):
-        pagamento.conta = self
-        pagamento.save()
-
-    def verificar_status(self):
-        return self.status
+    paga = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.nome_conta} - R$ {self.valor}"
+        status = "Paga" if self.paga else "Pendente"
+        return f"{self.nome_conta} - R$ {self.valor} - ({status})"
+
+    # As contas serão ordenados por "data_vencimento" em ordem decrescente.
+    class Meta:
+        ordering = ['-data_vencimento']
 
 
 class Pagamento(models.Model):
     pessoa = models.ForeignKey('Pessoa', related_name='pagamentos', on_delete=models.CASCADE)
     conta = models.ForeignKey('Conta', related_name='pagamentos', on_delete=models.CASCADE)
-    valor_pago = models.FloatField()
-    data_pagamento = models.DateField(auto_now_add=True)
-    forma_pagamento = models.CharField(max_length=50)
-
-    def verificar_sucesso_do_pagamento(self):
-        return self.valor_pago >= self.conta.valor
+    valor_pago = models.DecimalField(max_digits=10, decimal_places=2)
+    data_pagamento = models.DateTimeField(auto_now_add=True)
+    #forma_pagamento = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.pessoa.nome} pagou R$ {self.valor_pago} em {self.data_pagamento}"
+        return f"{self.pessoa.nome} pagou R$ {self.valor_pago} - {self.conta.nome_conta} em {self.data_pagamento}"
+
+    def save(self, *args, **kwargs):
+
+        # Ao salvar o pagamento, marca a conta como paga
+        super().save(*args, **kwargs)
+        self.conta.paga = True
+        self.conta.save()
+
+    class Meta:
+        # Os pagamentos serão ordenados por "data_pagamento" em ordem decrescente.
+        ordering = ['-data_pagamento']
+
+        # Impede que a mesma pessoa pague a mesma conta mais de uma vez
+        unique_together = ['pessoa' , 'conta']

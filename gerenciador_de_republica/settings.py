@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -128,5 +128,15 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Configuração de acesso as paginas
 LOGIN_URL = '/auth/login'
 LOGIN_REDIRECT_URL = '/'
+
+# Configuração de fuso horário
+TIME_ZONE = 'America/Sao_Paulo'  # Horário de Brasília
+USE_TZ = True  # Mantém o suporte a timezones
+
+# Configuração de localização (opcional)
+LANGUAGE_CODE = 'pt-br'
+USE_I18N = True
+USE_L10N = True

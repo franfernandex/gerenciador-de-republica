@@ -1,31 +1,54 @@
 from django import forms
-from .models import Pagamento, Conta
+from .models import Pagamento, Conta, Pessoa
+from django.utils import timezone
+
+
+class ContaForm(forms.ModelForm):
+    class Meta:
+        model = Conta
+        fields = ['nome_conta' , 'valor' , 'data_vencimento']
+        widgets = {
+            'nome_conta': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ex: Conta de Luz'
+            }),
+            'valor': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': '0.00',
+                'step': '0.01'
+            }),
+            'data_vencimento': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            })
+        }
+
 
 class PagamentoForm(forms.ModelForm):
     class Meta:
         model = Pagamento
-        fields = '__all__'
+        fields = ['conta']
+        widgets = {
+            'conta': forms.Select(attrs={
+                'class': 'form-control'
+            })
+        }
 
-    def __init__(self, args, **kwargs):
-        super().__init__(args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        self.pessoa = kwargs.pop('pessoa', None)
+        super().__init__(*args, **kwargs)
 
-        # Se estamos editando um pagamento existente
-        if self.instance and self.instance.pk:
-            self.fields['valor_pago'].initial = self.instance.conta.valor
-            self.fields['valor_pago'].disabled = True
+        # Filtrar apenas contas não pagas
+        if self.pessoa:
+            self.fields['conta'].queryset = Conta.objects.filter(paga=False)
+        
+    def save(self, commit=True):
+        pagamento = super().save(commit=False)
 
-        # Se estamos criando um novo pagamento (com conta selecionada)
-        elif 'conta' in self.data:
-            try:
-                conta_id = int(self.data.get('conta'))
-                conta = Conta.objects.get(pk=conta_id)
-                self.fields['valor_pago'].initial = conta.valor
-                self.fields['valor_pago'].disabled = True
-            except (ValueError, Conta.DoesNotExist):
-                pass
+        # Definir automaticamente o valor como o valor total da conta
+        pagamento.valor_pago = pagamento.conta.valor
 
-    def clean_valor_pago(self):
-        conta = self.cleaned_data.get('conta')
-        if conta:
-            return conta.valor  # Força o valor da conta
-        return self.cleaned_data['valor_pago']
+        if commit:
+            pagamento.save()
+        
+        return pagamento

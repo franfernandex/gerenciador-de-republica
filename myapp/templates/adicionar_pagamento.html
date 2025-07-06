@@ -1,15 +1,30 @@
 {% extends "base.html" %}
+
+{% block titulo %}
+    Gerenciador de Republicas - Adicionar Pagamento
+{% endblock %}
+
 {% block conteudo %}
-
-<div class="container mt-4">
-    <h2 class="mb-3">Registrar Pagamento</h2>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Salvar</button>
-        <a href="{% url 'pagamentos' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
-</div>
-
+    <div class="mycard">
+        <h1>Registrar Pagamento</h1>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="conta" class="form-label">Selecione a Conta:</label>
+                <select class="form-control" id="conta" name="conta" required>
+                    <option value="">Selecione uma conta</option>
+                    {% for conta in contas_disponiveis %}
+                        <option value="{{ conta.id }}">{{ conta.nome_conta }} - R$ {{ conta.valor }} (Vence em {{ conta.data_vencimento }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <p><strong>Obs:</strong> O pagamento será sempre do valor total da conta.</p>
+            
+            <button type="submit" class="btn btn-success"> Salvar </button>
+            <a href="{% url 'pagamentos' %}" class="btn btn-secondary text-white"> Cancelar </a>
+        </form>
+    </div>
 {% endblock %}

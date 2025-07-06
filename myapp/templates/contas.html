@@ -5,12 +5,51 @@
 {% endblock %}
 
 {% block conteudo %}
-    <div class="mycard">
+
+    <!-- <div class="mycard">
         <h1>Contas</h1>
         <ul>
             {% for l in contas %}
             <li>{{ l.nome_conta }} | {{l.status}} | {{l.data_vencimento}}</li>
             {% endfor %}
         </ul>
+    </div> -->
+
+    <div class="mycard">
+        <h1>Contas</h1>
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome da Conta</th>
+                    <th>Valor</th>
+                    <th>Data de Vencimento</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for conta in contas %}
+                <tr>
+                    <td>{{ conta.nome_conta }}</td>
+                    <td>R$ {{ conta.valor }}</td>
+                    <td>{{ conta.data_vencimento }}</td>
+                    <td>
+                        {% if conta.paga %}
+                            <span class="badge bg-success">Paga</span>
+                        {% else %}
+                            <span class="badge bg-warning">Pendente</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">Nenhuma conta cadastrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <a href="{% url 'cadastrar_conta' %}" class="btn btn-primary text-white mb-3"> Cadastrar Nova Conta </a>
     </div>
+
 {% endblock %}

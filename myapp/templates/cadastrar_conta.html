@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+    Gerenciador de Republicas - Cadastrar Conta
+{% endblock %}
+
+{% block conteudo %}
+    <div class="mycard">
+        <h1>Cadastrar Nova Conta</h1>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="nome_conta" class="form-label">Nome da Conta:</label>
+                <input type="text" class="form-control" id="nome_conta" name="nome_conta" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="valor" class="form-label">Valor:</label>
+                <input type="number" class="form-control" id="valor" name="valor" step="0.01" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="data_vencimento" class="form-label">Data de Vencimento:</label>
+                <input type="date" class="form-control" id="data_vencimento" name="data_vencimento" required>
+            </div>
+            
+            <button type="submit" class="btn btn-success"> Cadastrar </button>
+            <a href="{% url 'contas' %}" class="btn btn-secondary text-white"> Cancelar </a>
+        </form>
+    </div>
+{% endblock %}
