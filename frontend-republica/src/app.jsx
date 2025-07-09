@@ -1,43 +1,38 @@
-import { useState } from 'preact/hooks'
-import preactLogo from './assets/preact.svg'
-import viteLogo from '/vite.svg'
-import './app.css'
+import { useState } from 'preact/hooks';
+import MensagemAlerta from './components/MensagemAlerta';
+import Navbar from './components/Navbar';
+import Home from './components/Home';
+import ListarMembro from './components/ListarMembro';
+import ListarConta from './components/ListarConta';
+import ListarPagamento from './components/ListarPagamento';
 
 export function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState('dashboard');
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState('success');
+
+  const showMessage = (msg, type) => {
+    setMessage(msg);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+  };
+
+  const handleNavigate = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo preact" alt="Preact logo" />
-        </a>
-      </div>
-      <h1>Vite + Preact</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p>
-        Check out{' '}
-        <a
-          href="https://preactjs.com/guide/v10/getting-started#create-a-vite-powered-preact-app"
-          target="_blank"
-        >
-          create-preact
-        </a>
-        , the official Preact + Vite starter
-      </p>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
-    </>
-  )
+    <div className="app-container">
+      <MensagemAlerta message={message} type={messageType} onClose={() => setMessage(null)} />
+      <Navbar onNavigate={handleNavigate} currentPath={currentPage} />
+      <main className="main-content-area">
+        {currentPage === 'dashboard' && <Home />}
+        {currentPage === 'membros' && <ListarMembro showMessage={showMessage} />}
+        {currentPage === 'contas' && <ListarConta showMessage={showMessage} />}
+        {currentPage === 'pagamentos' && <ListarPagamento showMessage={showMessage} />}
+      </main>
+    </div>
+  );
 }
