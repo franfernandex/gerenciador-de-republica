@@ -1,0 +1,19 @@
+# Ignorar diretórios de ambiente virtual Python
+venv/
+*.pyc
+__pycache__/
+
+# Ignorar arquivos de banco de dados SQLite
+*.sqlite3
+
+# Ignorar arquivos de mídia e estáticos (se não forem versionados)
+/media/
+/static_root/
+
+# Ignorar arquivos de configuração de ambiente
+.env
+
+# Ignorar arquivos do frontend (Node.js/npm)
+frontend-republica/node_modules/
+frontend-republica/dist/
+frontend-republica/.env
