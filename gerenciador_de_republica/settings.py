@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myapp',
     'usuarios',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,12 @@ USE_TZ = True  # Mantém o suporte a timezones
 LANGUAGE_CODE = 'pt-br'
 USE_I18N = True
 USE_L10N = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}

@@ -17,6 +17,9 @@ class Republica(models.Model):
 
 
 class Pessoa(models.Model):
+    #Novo campo para ligar uma pessoa a um usuário no Django:
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='pessoa_profile')
+
     cpf = models.CharField(max_length=14, unique=True)
     nome = models.CharField(max_length=100)
     idade = models.IntegerField()
@@ -48,7 +51,6 @@ class Pagamento(models.Model):
     conta = models.ForeignKey('Conta', related_name='pagamentos', on_delete=models.CASCADE)
     valor_pago = models.DecimalField(max_digits=10, decimal_places=2)
     data_pagamento = models.DateTimeField(auto_now_add=True)
-    #forma_pagamento = models.CharField(max_length=50)
 
     def __str__(self):
         return f"{self.pessoa.nome} pagou R$ {self.valor_pago} - {self.conta.nome_conta} em {self.data_pagamento}"

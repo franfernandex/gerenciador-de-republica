@@ -74,6 +74,7 @@ def cadastro(request):
 
             # Criar a pessoa
             pessoa = Pessoa.objects.create(
+                user=user,
                 cpf=cpf,
                 nome=nome,
                 idade=int(idade),
